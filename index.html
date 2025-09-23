@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistema de Gerenciamento de Biblioteca</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+      <div class="loading-container">
+        <div class="loading-spinner"></div>
+        <p>Carregando Sistema de Biblioteca...</p>
+      </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+      <div class="header-container">
+        <div class="logo">
+          <i class="fas fa-book"></i>
+          <h1>Biblioteca Digital</h1>
+        </div>
+        <nav class="nav-menu">
+          <ul>
+            <li><a href="#inicio" class="nav-link active">Início</a></li>
+            <li><a href="#acervo" class="nav-link">Acervo</a></li>
+            <li><a href="#emprestimos" class="nav-link">Empréstimos</a></li>
+            <li><a href="#reservas" class="nav-link">Reservas</a></li>
+            <li><a href="#relatorios" class="nav-link">Relatórios</a></li>
+            <li><a href="#perfil" class="nav-link">Perfil</a></li>
+          </ul>
+        </nav>
+        <div class="user-menu">
+          <div class="user-info">
+            <span id="user-name">Usuário</span>
+            <i class="fas fa-user-circle"></i>
+          </div>
+          <div class="notifications">
+            <i class="fas fa-bell"></i>
+            <span class="notification-badge">3</span>
+          </div>
+          <button class="logout-btn" onclick="logout()">
+            <i class="fas fa-sign-out-alt"></i>
+          </button>
+        </div>
+        <div class="mobile-menu-toggle">
+          <i class="fas fa-bars"></i>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Dashboard -->
+      <section id="inicio" class="content-section active">
+        <div class="dashboard">
+          <div class="dashboard-header">
+            <h2>Painel de Controle</h2>
+            <p>Bem-vindo ao Sistema de Gerenciamento de Biblioteca</p>
+          </div>
+
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-book"></i>
+              </div>
+              <div class="stat-info">
+                <h3 id="total-livros">1,234</h3>
+                <p>Total de Livros</p>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-users"></i>
+              </div>
+              <div class="stat-info">
+                <h3 id="total-usuarios">567</h3>
+                <p>Usuários Ativos</p>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-exchange-alt"></i>
+              </div>
+              <div class="stat-info">
+                <h3 id="emprestimos-ativos">89</h3>
+                <p>Empréstimos Ativos</p>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-clock"></i>
+              </div>
+              <div class="stat-info">
+                <h3 id="reservas-pendentes">12</h3>
+                <p>Reservas Pendentes</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="dashboard-content">
+            <div class="quick-actions">
+              <h3>Ações Rápidas</h3>
+              <div class="action-buttons">
+                <button class="action-btn" onclick="showSection('acervo')">
+                  <i class="fas fa-plus"></i>
+                  Novo Material
+                </button>
+                <button class="action-btn" onclick="showSection('emprestimos')">
+                  <i class="fas fa-hand-holding"></i>
+                  Novo Empréstimo
+                </button>
+                <button class="action-btn" onclick="showSection('reservas')">
+                  <i class="fas fa-bookmark"></i>
+                  Nova Reserva
+                </button>
+                <button class="action-btn" onclick="showQRScanner()">
+                  <i class="fas fa-qrcode"></i>
+                  Ler QR Code
+                </button>
+              </div>
+            </div>
+
+            <div class="recent-activity">
+              <h3>Atividade Recente</h3>
+              <div class="activity-list" id="activity-list">
+                <!-- Atividades serão carregadas dinamicamente -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Acervo -->
+      <section id="acervo" class="content-section">
+        <div class="section-header">
+          <h2>Gerenciamento de Acervo</h2>
+          <button class="btn-primary" onclick="showAddMaterialModal()">
+            <i class="fas fa-plus"></i>
+            Adicionar Material
+          </button>
+        </div>
+
+        <div class="search-filters">
+          <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input
+              type="text"
+              id="material-search"
+              placeholder="Buscar por título, autor ou ISBN..."
+            />
+          </div>
+          <div class="filters">
+            <select id="categoria-filter">
+              <option value="">Todas as Categorias</option>
+              <option value="ficcao">Ficção</option>
+              <option value="nao-ficcao">Não-Ficção</option>
+              <option value="tecnico">Técnico</option>
+              <option value="academico">Acadêmico</option>
+            </select>
+            <select id="status-filter">
+              <option value="">Todos os Status</option>
+              <option value="disponivel">Disponível</option>
+              <option value="emprestado">Emprestado</option>
+              <option value="reservado">Reservado</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="materials-grid" id="materials-grid">
+          <!-- Materiais serão carregados dinamicamente -->
+        </div>
+      </section>
+
+      <!-- Empréstimos -->
+      <section id="emprestimos" class="content-section">
+        <div class="section-header">
+          <h2>Empréstimos e Devoluções</h2>
+          <div class="header-actions">
+            <button class="btn-secondary" onclick="showNewLoanModal()">
+              <i class="fas fa-plus"></i>
+              Novo Empréstimo
+            </button>
+            <button class="btn-primary" onclick="showReturnModal()">
+              <i class="fas fa-undo"></i>
+              Devolução
+            </button>
+          </div>
+        </div>
+
+        <div class="loans-tabs">
+          <button class="tab-btn active" onclick="showLoanTab('ativos')">
+            Empréstimos Ativos
+          </button>
+          <button class="tab-btn" onclick="showLoanTab('historico')">
+            Histórico
+          </button>
+          <button class="tab-btn" onclick="showLoanTab('vencidos')">
+            Vencidos
+          </button>
+        </div>
+
+        <div class="loans-content">
+          <div id="loans-ativos" class="tab-content active">
+            <div class="loans-table">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Material</th>
+                    <th>Usuário</th>
+                    <th>Data Empréstimo</th>
+                    <th>Data Vencimento</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="active-loans-table">
+                  <!-- Empréstimos ativos serão carregados dinamicamente -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Reservas -->
+      <section id="reservas" class="content-section">
+        <div class="section-header">
+          <h2>Sistema de Reservas</h2>
+          <button class="btn-primary" onclick="showNewReservationModal()">
+            <i class="fas fa-bookmark"></i>
+            Nova Reserva
+          </button>
+        </div>
+
+        <div class="reservations-grid" id="reservations-grid">
+          <!-- Reservas serão carregadas dinamicamente -->
+        </div>
+      </section>
+
+      <!-- Relatórios -->
+      <section id="relatorios" class="content-section">
+        <div class="section-header">
+          <h2>Relatórios e Estatísticas</h2>
+          <div class="report-actions">
+            <button
+              class="btn-secondary"
+              onclick="generateReport('emprestimos')"
+            >
+              <i class="fas fa-file-pdf"></i>
+              Relatório de Empréstimos
+            </button>
+            <button class="btn-secondary" onclick="generateReport('materiais')">
+              <i class="fas fa-chart-bar"></i>
+              Relatório de Materiais
+            </button>
+          </div>
+        </div>
+
+        <div class="reports-dashboard">
+          <div class="chart-container">
+            <canvas id="loans-chart"></canvas>
+          </div>
+          <div class="chart-container">
+            <canvas id="materials-chart"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- Perfil -->
+      <section id="perfil" class="content-section">
+        <div class="profile-section">
+          <div class="profile-header">
+            <div class="profile-avatar">
+              <i class="fas fa-user-circle"></i>
+            </div>
+            <div class="profile-info">
+              <h2 id="profile-name">Nome do Usuário</h2>
+              <p id="profile-role">Bibliotecário</p>
+              <div class="profile-stats">
+                <div class="stat">
+                  <span class="stat-number">15</span>
+                  <span class="stat-label">Livros Lidos</span>
+                </div>
+                <div class="stat">
+                  <span class="stat-number">850</span>
+                  <span class="stat-label">Pontos</span>
+                </div>
+                <div class="stat">
+                  <span class="stat-number">3</span>
+                  <span class="stat-label">Conquistas</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="profile-content">
+            <div class="profile-tabs">
+              <button class="tab-btn active" onclick="showProfileTab('dados')">
+                Dados Pessoais
+              </button>
+              <button class="tab-btn" onclick="showProfileTab('historico')">
+                Histórico
+              </button>
+              <button class="tab-btn" onclick="showProfileTab('conquistas')">
+                Conquistas
+              </button>
+              <button class="tab-btn" onclick="showProfileTab('configuracoes')">
+                Configurações
+              </button>
+            </div>
+
+            <div class="profile-tab-content">
+              <div id="profile-dados" class="tab-content active">
+                <form class="profile-form">
+                  <div class="form-group">
+                    <label>Nome Completo</label>
+                    <input
+                      type="text"
+                      id="profile-fullname"
+                      value="João Silva"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Email</label>
+                    <input
+                      type="email"
+                      id="profile-email"
+                      value="joao@email.com"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Telefone</label>
+                    <input
+                      type="tel"
+                      id="profile-phone"
+                      value="(11) 99999-9999"
+                    />
+                  </div>
+                  <button type="submit" class="btn-primary">
+                    Salvar Alterações
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Modals -->
+    <!-- Modal de Adicionar Material -->
+    <div id="add-material-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Adicionar Novo Material</h3>
+          <button class="close-btn" onclick="closeModal('add-material-modal')">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <form id="add-material-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Título *</label>
+              <input type="text" id="material-title" required />
+            </div>
+            <div class="form-group">
+              <label>Autor *</label>
+              <input type="text" id="material-author" required />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>ISBN</label>
+              <input type="text" id="material-isbn" />
+            </div>
+            <div class="form-group">
+              <label>Categoria *</label>
+              <select id="material-category" required>
+                <option value="">Selecione...</option>
+                <option value="ficcao">Ficção</option>
+                <option value="nao-ficcao">Não-Ficção</option>
+                <option value="tecnico">Técnico</option>
+                <option value="academico">Acadêmico</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Editora</label>
+              <input type="text" id="material-publisher" />
+            </div>
+            <div class="form-group">
+              <label>Ano de Publicação</label>
+              <input type="number" id="material-year" min="1900" max="2024" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Descrição</label>
+            <textarea id="material-description" rows="3"></textarea>
+          </div>
+          <div class="modal-actions">
+            <button
+              type="button"
+              class="btn-secondary"
+              onclick="closeModal('add-material-modal')"
+            >
+              Cancelar
+            </button>
+            <button type="submit" class="btn-primary">
+              Adicionar Material
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal de QR Code Scanner -->
+    <div id="qr-scanner-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Scanner de QR Code</h3>
+          <button class="close-btn" onclick="closeModal('qr-scanner-modal')">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="qr-scanner-container">
+          <div id="qr-reader" class="qr-reader"></div>
+          <div class="qr-result" id="qr-result"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de Notificações -->
+    <div id="notifications-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Notificações</h3>
+          <button class="close-btn" onclick="closeModal('notifications-modal')">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="notifications-list" id="notifications-list">
+          <!-- Notificações serão carregadas dinamicamente -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.4/html5-qrcode.min.js"></script>
+    <script src="config.js"></script>
+    <script src="demo-data.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
